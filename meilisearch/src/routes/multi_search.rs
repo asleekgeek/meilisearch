@@ -49,7 +49,11 @@ pub async fn search_with_post(
             {
                 debug!("search called with params: {:?}", query);
 
-                // Tenant token search_rules.
+                // Check index from API key
+                if !index_scheduler.filters().is_index_authorized(&index_uid) {
+                    return Err(AuthenticationError::InvalidToken.into());
+                }
+                // Apply search rules from tenant token
                 if let Some(search_rules) =
                     index_scheduler.filters().get_index_search_rules(&index_uid)
                 {
