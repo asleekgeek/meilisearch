@@ -9,7 +9,7 @@ use serde::Serialize;
 
 use crate::analytics::{Analytics, MultiSearchAggregator};
 use crate::extractors::authentication::policies::ActionPolicy;
-use crate::extractors::authentication::GuardedData;
+use crate::extractors::authentication::{AuthenticationError, GuardedData};
 use crate::extractors::json::ValidatedJson;
 use crate::extractors::sequential_extractor::SeqHandler;
 use crate::search::{
@@ -51,7 +51,7 @@ pub async fn search_with_post(
 
                 // Tenant token search_rules.
                 if let Some(search_rules) =
-                    index_scheduler.filters().search_rules.get_index_search_rules(&index_uid)
+                    index_scheduler.filters().get_index_search_rules(&index_uid)
                 {
                     add_search_rules(&mut query, search_rules);
                 }

@@ -238,7 +238,7 @@ async fn get_stats(
     analytics: web::Data<dyn Analytics>,
 ) -> Result<HttpResponse, ResponseError> {
     analytics.publish("Stats Seen".to_string(), json!({ "per_index_uid": false }), Some(&req));
-    let search_rules = &index_scheduler.filters().search_rules;
+    let search_rules = index_scheduler.filters();
 
     let stats =
         create_all_stats((*index_scheduler).clone(), (*auth_controller).clone(), search_rules)?;
@@ -250,7 +250,7 @@ async fn get_stats(
 pub fn create_all_stats(
     index_scheduler: Data<IndexScheduler>,
     auth_controller: AuthController,
-    search_rules: &meilisearch_auth::SearchRules,
+    search_rules: &meilisearch_auth::AuthFilter,
 ) -> Result<Stats, ResponseError> {
     let mut last_task: Option<OffsetDateTime> = None;
     let mut indexes = BTreeMap::new();
